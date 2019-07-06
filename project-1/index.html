@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu|VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Fight Or Flight</title>
+</head>
+<body>
+<main>
+    <div class="content">
+
+
+    <div class="displayWrapper">
+
+        <p class="gamestory" id="output">CLICK START TO BEGIN</p>
+
+        <div class="statuswindow" id="statuswindow">
+            <p class="playerstatus" id="output"></p>
+            <p class="gamenarration" id="output"></p>
+        </div>
+
+    </div>
+
+    <div class="controlWrapper" onclick="" onreset="">
+
+        <button type="button" class="myButton" id="start" onclick="runGame()" >START</button>
+
+        <button type="button" class="myButton" id="stats" onclick="w3.toggleShow('.statuswindow')">STATUS</button>
+
+        <div class="choicewindow" id="choicewindow">
+            <p class="playerchoice" id="output">sdfsdf</p>
+        </div>
+
+    </div>
+
+
+    </div>
+</main>
+
+<script src="https://www.w3schools.com/lib/w3.js"></script>
+<script src="gamedata.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
