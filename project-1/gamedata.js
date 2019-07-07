@@ -22,8 +22,10 @@ var Skills = [{
         var x = randomNumber(0,1)
         if(x===0){
             target.isAlive = false;
+            alert("you have slain the monster")
         } else{
             target.isAlive = true;
+            alert("you failed to kill the monster")
         }
     }
 },
@@ -34,6 +36,7 @@ var Skills = [{
     staRequired: 10,
     use : function(target){
         target.hp = target.hp -10;
+        alert("Enemy has " + target.hp + " left")
     }
 }]
 
@@ -90,7 +93,13 @@ var Player = {
         Pen.use(target)
     },
     useSnap: function(target){
-
+        if(this.mp<=2000){
+            alert("warning! you barely have enough mana for this move");
+            Skills[0].use(target);
+        }
+    },
+    useKick: function(target){
+        Skills[1].use(target);
     }
 }
 
@@ -110,6 +119,7 @@ var Monster = {
     species:["Goblin", "Kobold", "Slime", "Imp"],
     hp:0,
     xpGiven: 0,
+    isAlive: true,
     status : function(){
         if(this.hp === 0){
             return console.log("the Monster is dead")
@@ -122,7 +132,9 @@ var Monster = {
         mon.species = randomArray(this.species)
         mon.hp = randomNumber(5, 15);
         mon.xpGiven = randomNumber(5,15);
-        console.log(mon)
+        mon.isAlive = true;
+        console.log("mon has been created")
+
         return mon
     }
 };
@@ -130,9 +142,7 @@ var Monster = {
 ////////// Actions
 
 
-function fight(){
-    alert("fight")
-}
+
 function run(){
 
 }
@@ -157,67 +167,66 @@ function randomArray(array) {
 var Prologue = {
     story: "Earth exploded. You died. Or at least you thought you died. You woke up in the middle of a dense forest. Surrounded by trees, you know for sure, did not exist on earth. You take your time to check your surroundings. However it was then when you blacked out. You woke up again but this time with a.. 'game prompt?' hovering in front of you.",
     gamenarration: "Welcome Anon. You have just been transported to this world. A world unlike yours. Where magic exists. A world of possibilities. There is only Rule here and that is 'Might is Right'. Survival of the fittest. Enjoy.",
-    playerchoices: "<a class='playerschoice' id='output' onclick='beginAdv()'>Begin</a>",
+    playerChoices: "<a id='player-choice' onclick='beginAdv()'>Begin</a>",
     triggerEvent: function(){
         Display.story(this.story)
-        Display.delayNarration(this.gamenarration);
-        Display.delayChoice(this.playerchoices);
+        Display.delayNarration(this.gamenarration, this.playerChoices);
     }
-}
-
-
+};
 function beginAdv(){
     $("#player-choice").fadeOut();
     StatusWindow.hide();
     Beginning.triggerEvent();
+    Display.clear();
     Player.displayStats();
-
-
-}
+};
 var Beginning = {
     story: "You spend minutes trying to figure things out. Pressing the 'STATUS' button brings up a window where you can see a list of stats. With nothing else to be done, or could be done, in your current situation, you decide to proceed forward",
-    playerchoices: "<a class='playerschoice' id='output' onclick='moveForward()'>Move Onwards</a>",
+    playerChoices: "<a id='player-choice' onclick='moveForward()'>Move Onwards</a>",
     triggerEvent: function(){
         Display.story(this.story)
-        Display.delayChoice(this.playerchoices);
-
-
-
-
+        Display.delayChoice(this.playerChoices);
     }
-}
+};
 function moveForward(){
 
     $("#player-choice").fadeOut();
     StatusWindow.hide();
     MeetRandomWeak.triggerEvent();
-}
-
+};
 var MeetRandomWeak = {
     story: "You encountered a monster not long after walking. Though the monster looks weak, you're unsure of what to do.",
+    fightStory: "You cautiously approach the monster",
     monster: Monster.createRandom(),
-    playerchoices: "<a class='playerschoice' id='output' onclick='moveForward()'>Fight</a> <a class='playerschoice' id='output' onclick='moveForward()'>Run</a>",
-
+    playerChoices: "<a id='player-choice' onclick='fight()'>Fight</a> <a id='player-choice' onclick='run()'>Run</a>",
+    fightChoices: "<a id='player-choice' onclick='useSkills()'>Use Skills</a> <a id='player-choice' onclick='run()'>Use Items</a>",
+    skillChoices: "<a id='player-choice' onclick='Player.useSnap(MeetRandomWeak.monster)'>Snap</a> <a id='player-choice' onclick='Player.useKick(MeetRandomWeak.monster)'>Kick</a>",
     triggerEvent: function(){
         Display.story(this.story)
-        Display.delayChoice(this.playerchoices);
+        var n = this.monster.species + "<br>";
+        var h = "Hp: " + this.monster.hp + "<br>";
+        Display.delayStatus(n + h);
+        Display.delayChoice(this.playerChoices);
     },
-    eventFight: function(){
+    fightEvent: function(){
+        Display.story(this.fightStory);
+        Display.choices(this.fightChoices);
+    },
+    skillEvent: function(){
+        Display.choices(this.skillChoices);
 
     }
+};
+function fight(){
+    $("#player-choice").fadeOut();
+    StatusWindow.hide();
+    MeetRandomWeak.fightEvent();
 }
+function useSkills(){
+    $("#player-choice").fadeOut();
+    StatusWindow.hide();
+    MeetRandomWeak.skillEvent();
 
-var FightTime = {
-    story: "",
-    characters: [],
-    actions: [useSkills],
-
-
-    triggerEvent: function(){
-        displayStory(this.story);
-
-
-    }
 }
 
 console.log("simplegame.js loaded")

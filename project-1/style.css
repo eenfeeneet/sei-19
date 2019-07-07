@@ -68,7 +68,7 @@ div.displayWrapper {
 	text-align: left;
 	font-size: 25px;
 	font-family: 'VT323', monospace;
-	padding: 20px;
+	padding: 30px;
 	display: none;
 }
 #status-window {
@@ -76,42 +76,27 @@ div.displayWrapper {
 
 	border: 5px double #1C6EA4;
 	border-radius: 10px;
-	/*margin: 10px 10px 10px 0;*//*
-	margin: 50px 200px 50px 200px;*/
+	/*margin: 10px 10px 10px 0;*/
+	margin: 50px 200px 50px 200px;
 	overflow: auto;
 	display: none;
+	align-items: center;
+}
+#game-narration {
+	color: lime;
+	text-align: left;
+	font-size: 23px;
+	font-family: 'VT323', monospace;
+	margin: 20px;
 }
 #player-status {
 	color: lime;
 	text-align: left;
-	font-size: 20px;
+	font-size: 25px;
 	font-family: 'VT323', monospace;
-	margin: 20px 0 0 20px;
+	margin: 20px;
 }
 
-/*p.gamenarration {
-	color: lime;
-	text-align: left;
-	font-size: 20px;
-	font-family: 'VT323', monospace;
-	margin: 20px 0 0 20px;
-}*/
-/*
-
-div.inputWrapper {
-	border-radius: 10px;
-	display: flex;
-	flex-flow: row nowrap;
-}
-.userinput {
-	text-align: center;
-	font-size: 20px;
-	border-radius: 10px;
-	background-color: darkslategray;
-	padding: 10px;
-	margin: 10px;
-}
-*/
 div.controlWrapper {
 	background-color: black;
 	flex-grow: 1;
@@ -134,7 +119,7 @@ div.controlWrapper {
 	text-align: center;
 	align-content: center;
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 }
 
 #player-choice {
@@ -142,6 +127,7 @@ div.controlWrapper {
 	font-size: 20px;
 	font-family: 'Ubuntu', sans-serif;
 	cursor: pointer;
+	align-self: center;
 }
 .myButton {
 	-moz-box-shadow: 0px 6px 14px -3px #f2fadc;

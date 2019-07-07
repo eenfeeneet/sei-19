@@ -1,24 +1,4 @@
-
-// $(document).ready(function() {
-
-// $("#btnStats").on('click', function(){
-//     $("#status-window").fadeToggle(500)
-// });
-
-
-
-// console.log("script.js loaded")
-
-// });
-
-
-
-
 var isGameRunning = false;
-var isPlayerActive = false;
-
-
-
 
 var Display = {
     story : function(story){
@@ -28,39 +8,47 @@ var Display = {
         // output.innerText = story;
     },
     narration : function(narration){
-         $("#status-window").html(narration);
+         $("#game-narration").html(narration);
+    },
+    clear : function(){
+         $("#game-narration").empty();
     },
     status : function(status){
          $("#player-status").html(status);
     },
     choices : function(choices){
-        $("#player-choice").html(choices);
-        $("#player-choice").fadeIn();
+        $("#choice-window").html(choices);
+        $("#choice-window").fadeIn();
 
     },
-    delayNarration: function(message){
-    setTimeout(function(){
-        Display.status(message);
-        StatusWindow.show();
-        } , 7000 );
-    },
-    delayStatus: function(message){
-    setTimeout(function(){
-        Display.status(message);
-        StatusWindow.show();
-        } , 7000 );
-    },
-    delayChoice: function(message){
+    delayNarration: function(narration, choice){
         setTimeout(function(){
-        Display.choices(message)
-        } , 8000 );
+            Display.narration(narration);
+            StatusWindow.show();
+            setTimeout(function(){
+                Display.choices(choice)
+            } , 2000 );
+        } , 5000 );
+    },
+    delayStatus: function(status, choice){
+        setTimeout(function(){
+            Display.status(status);
+            StatusWindow.show();
+            setTimeout(function(){
+                Display.choices(choice)
+            } , 2000 );
+        } , 3500 );
+    },
+    delayChoice: function(choice){
+        setTimeout(function(){
+            Display.choices(choice)
+        } , 2000 );
     }
 }
-
 var StatusWindow = {
     show: function(){
         $("#game-story").fadeOut(10);
-        $("#status-window").css({margin: '50px 200px 50px 200px'});
+        // $("#status-window").css({margin: '50px 200px 50px 200px'});
         $("#status-window").fadeIn(100);
         // var x = document.getElementById("#status-window");
         // x.style.display = "block";
@@ -68,15 +56,8 @@ var StatusWindow = {
     hide: function(){
         $("#status-window").fadeOut(10);
         $("#game-story").fadeIn(100);
-    },
-    // clear: function(){
-    //     var x = document.getElementById(".playerstatus");
-    //     x.innerText = "";
-    //     var y = document.getElementById(".gamenarration")
-    //     y.innerHTML = "";
-    // }
+    }
 }
-
 
 function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -89,14 +70,7 @@ function randomArray(array) {
 
 if(!isGameRunning){
     console.log("game is not running")
-}
-
-
-
-
-$(".content").fadeIn(3000)
-
-
+};
 
 $("#btnStats").on('click', function(){
     if(isGameRunning){
@@ -105,11 +79,18 @@ $("#btnStats").on('click', function(){
     }
 });
 
-
-function runGame (){
+$("#btnStart").on('click', function(){
     if(!isGameRunning){
         $("#game-welcome").fadeOut(10)
         Prologue.triggerEvent();
         isGameRunning = true;
     }
-}
+});
+
+// function runGame (){
+//     if(!isGameRunning){
+//         $("#game-welcome").fadeOut(10)
+//         Prologue.triggerEvent();
+//         isGameRunning = true;
+//     }
+// }

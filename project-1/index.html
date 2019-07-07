@@ -21,6 +21,7 @@
         <p class="output" id="game-story"></p>
 
         <div class="window" id="status-window">
+            <p class="output" id="game-narration"></p>
             <p class="output" id="player-status"></p>
         </div>
 
@@ -28,13 +29,11 @@
 
     <div class="controlWrapper" onclick="" onreset="">
 
-        <button type="button" class="myButton" id="btnStart" onclick="runGame()">START</button>
+        <button type="button" class="myButton" id="btnStart">START</button>
+
+        <div class="window" id="choice-window"></div>
 
         <button type="button" class="myButton" id="btnStats">STATUS</button>
-
-        <div class="window" id="choice-window">
-            <p class="output" id="player-choice"></p>
-        </div>
 
     </div>
 
@@ -42,7 +41,7 @@
     </div>
 </main>
 
-<script src="simplegame.js"></script>
+<script src="gamedata.js"></script>
 <script src="script.js"></script>
 
 <script>
