@@ -1,3 +1,7 @@
+
+
+
+
 var count = {
       counter : 0,
       get reset() {
@@ -10,8 +14,8 @@ var count = {
 
 
 var Skills = [{
-    skillName: "Thanuz Finger Snap",
-    description: "Instantly destroy targeted enemies. High chance of failing.",
+    skillName: "Snap",
+    description: "Snap your fingers arrogantly to instantly destroy targeted enemies. High chance of failing.",
     damage: "Instant Death",
     mpRequired: 2000,
     use : function(target){
@@ -64,8 +68,14 @@ var Player = {
     items: [],
     skills: Skills,
     displayStats: function(){
-        var s = this.name + "<br>Level: " + this.level + "<br>Hp: " + this.hp + "<br>Mp: " + this.mp + "<br>Sta: " + this.sta + "<br>Items: " + this.items + "<br>Skills: " + this.Skills[0];
-        return  Display.status(s);
+        var n = this.name + "<br>";
+        var l = "Level: " + this.level + "<br>";
+        var h = "Hp: " + this.hp + "<br>";
+        var m = "Mp: " + this.mp + "<br>";
+        var s = "Sta: " + this.sta + "<br>";
+        var i = "Items: " + this.items + "<br>";
+        var sk = "Skills: " + Skills[0].skillName + ", " + Skills[1].skillName
+        Display.status(n + l + h + m + s + i + sk);
     },
     takeItem: function(item){
         this.items.push(item);
@@ -78,6 +88,9 @@ var Player = {
     usePen: function(injured){
         this.mp = this.mp - Pen.mpRequired
         Pen.use(target)
+    },
+    useSnap: function(target){
+
     }
 }
 
@@ -106,7 +119,7 @@ var Monster = {
     },
     createRandom: function(){
         var mon = Object.create(Monster);
-        mon.species = randomArray(this.species);
+        mon.species = randomArray(this.species)
         mon.hp = randomNumber(5, 15);
         mon.xpGiven = randomNumber(5,15);
         console.log(mon)
@@ -116,10 +129,7 @@ var Monster = {
 
 ////////// Actions
 
-function moveForward(){
-    var random = randomArray(encounters);
-    random.triggerEvent;
-}
+
 function fight(){
     alert("fight")
 }
@@ -133,36 +143,69 @@ function useItems(){
 
 }
 
+////////// Helper functions
+
+function randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomArray(array) {
+    return array[Math.floor(Math.random() * array.length)];
+}
 
 ////////// Encounters
 
 var Prologue = {
     story: "Earth exploded. You died. Or at least you thought you died. You woke up in the middle of a dense forest. Surrounded by trees, you know for sure, did not exist on earth. You take your time to check your surroundings. However it was then when you blacked out. You woke up again but this time with a.. 'game prompt?' hovering in front of you.",
     gamenarration: "Welcome Anon. You have just been transported to this world. A world unlike yours. Where magic exists. A world of possibilities. There is only Rule here and that is 'Might is Right'. Survival of the fittest. Enjoy.",
-    playerchoices: "<a class='playerschoice' id='output' onclick='beginAdv()' cursor='pointer'>Begin</a>",
+    playerchoices: "<a class='playerschoice' id='output' onclick='beginAdv()'>Begin</a>",
     triggerEvent: function(){
-        Display.story(this.story);
-        Display.delayStatus(this.gamenarration);
+        Display.story(this.story)
+        Display.delayNarration(this.gamenarration);
         Display.delayChoice(this.playerchoices);
     }
 }
 
+
 function beginAdv(){
+    $("#player-choice").fadeOut();
     StatusWindow.hide();
-    Player.displayStats();
     Beginning.triggerEvent();
+    Player.displayStats();
+
 
 }
 var Beginning = {
-    story: "You spend minutes trying to figure things out. Pressing the 'STATUS' button brings up a window where you can see a list of stats. It all sinks in finally. Fight or die.",
-    playerstats: "",
-    playerchoices: "<a class='prompts' id='output' href=''>1. Begin</a>",
+    story: "You spend minutes trying to figure things out. Pressing the 'STATUS' button brings up a window where you can see a list of stats. With nothing else to be done, or could be done, in your current situation, you decide to proceed forward",
+    playerchoices: "<a class='playerschoice' id='output' onclick='moveForward()'>Move Onwards</a>",
     triggerEvent: function(){
-        Display.story(this.story);
+        Display.story(this.story)
+        Display.delayChoice(this.playerchoices);
+
+
+
 
     }
 }
+function moveForward(){
 
+    $("#player-choice").fadeOut();
+    StatusWindow.hide();
+    MeetRandomWeak.triggerEvent();
+}
+
+var MeetRandomWeak = {
+    story: "You encountered a monster not long after walking. Though the monster looks weak, you're unsure of what to do.",
+    monster: Monster.createRandom(),
+    playerchoices: "<a class='playerschoice' id='output' onclick='moveForward()'>Fight</a> <a class='playerschoice' id='output' onclick='moveForward()'>Run</a>",
+
+    triggerEvent: function(){
+        Display.story(this.story)
+        Display.delayChoice(this.playerchoices);
+    },
+    eventFight: function(){
+
+    }
+}
 
 var FightTime = {
     story: "",
@@ -177,15 +220,4 @@ var FightTime = {
     }
 }
 
-var MeetRandomWeak = {
-    story: "",
-    characters: [],
-    actions: [fight, run],
-
-    triggerEvent: function(){
-        displayStory(this.story)
-    },
-    eventFight: function(){
-
-    }
-}
+console.log("simplegame.js loaded")

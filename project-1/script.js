@@ -1,63 +1,73 @@
-var isGameRunning = false;
 
+// $(document).ready(function() {
+
+// $("#btnStats").on('click', function(){
+//     $("#status-window").fadeToggle(500)
+// });
+
+
+
+// console.log("script.js loaded")
+
+// });
+
+
+
+
+var isGameRunning = false;
 var isPlayerActive = false;
 
-
-const character = {
-    name: 'name',
-    job: 'class',
-    hp: 0,
-    mp: 0,
-    sta: 0,
-    skills: "skills",
-    logStats() {
-        console.log(this.name);
-        console.log("job: " + this.job);
-        console.log("hp: " + this.hp);
-        console.log("mp: " + this.mp);
-        console.log("skills: " + this.skills);
-    }
-};
 
 
 
 var Display = {
     story : function(story){
-        var output = document.querySelector(".gamestory");
-        output.innerHTML = story;
-    },
-    status : function(status){
-        var output = document.querySelector(".playerstatus");
-        output.innerHTML = status;
+        $("#game-welcome").fadeOut(10);
+        $("#game-story").text(story).fadeIn(100);
+        // var output = document.querySelector("#game-story");
+        // output.innerText = story;
     },
     narration : function(narration){
-        var output = document.querySelector(".gamenarration");
-        output.innerHTML = narration;
+         $("#status-window").html(narration);
+    },
+    status : function(status){
+         $("#player-status").html(status);
     },
     choices : function(choices){
-        var output = document.querySelector(".playerchoice");
-        output.innerHTML = choices;
+        $("#player-choice").html(choices);
+        $("#player-choice").fadeIn();
+
+    },
+    delayNarration: function(message){
+    setTimeout(function(){
+        Display.status(message);
+        StatusWindow.show();
+        } , 7000 );
     },
     delayStatus: function(message){
     setTimeout(function(){
         Display.status(message);
         StatusWindow.show();
-        } , 3000 );
+        } , 7000 );
     },
     delayChoice: function(message){
         setTimeout(function(){
         Display.choices(message)
-        } , 6000 );
+        } , 8000 );
     }
 }
+
 var StatusWindow = {
     show: function(){
-        var x = document.getElementById("statuswindow");
-        x.style.display = "block";
+        $("#game-story").fadeOut(10);
+        $("#status-window").css({margin: '50px 200px 50px 200px'});
+        $("#status-window").fadeIn(100);
+        // var x = document.getElementById("#status-window");
+        // x.style.display = "block";
     },
     hide: function(){
-        var x = document.getElementById("statuswindow");
-        x.style.display = "none";
+        $("#status-window").fadeOut(10);
+        $("#game-story").fadeIn(100);
     },
     // clear: function(){
     //     var x = document.getElementById(".playerstatus");
@@ -75,66 +85,30 @@ function randomArray(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
-function playerStatsWindow (currentPlayer){
-    var x = currentPlayer.name;
-    x.toupper
-    displayStatus(`${currentPlayer.name} <br> Job: ${currentPlayer.job}<br>
-    Hp: ${currentPlayer.hp}<br>Mp: ${currentPlayer.mp}<br>Sta: ${currentPlayer.sta}<br>Skills: ${currentPlayer.skills}`)
-}
-function assignCharacter (player){
-    console.log("assigning character");
-    nameEntered = true;
-    if(nameEntered)
-    var newplayer = Object.create(character);
-    newplayer.name = player;
-    newplayer.job = randomArray(jobDB);
-    newplayer.hp = randomArray(statPointsDB);
-    newplayer.mp = randomArray(statPointsDB);
-    newplayer.sta = randomArray(statPointsDB);
-    newplayer.skills = randomArray(skillsDB);
-    console.log("character created")
-
-    characterDB.push(newplayer)
-    console.log("character added to DB")
-
-    currentPlayer = newplayer;
-    playerStatsWindow(currentPlayer)
-
-    newplayer.logStats();
-    nameEntered = false;
-    console.log("initialized new player")
-    isPlayerActive = true;
-}
-
 
 
 if(!isGameRunning){
     console.log("game is not running")
 }
 
-function testMsg(){
-    alert("just a test")
-}
 
-function toggleInputBar() {
-    var x = document.getElementById("inputWrapper");
-    var y = document.getElementById("choices");
-    var z = document.getElementById("stats");
-  if (x.style.display === "none") {
-    x.style.display = "block";
-    y.style.display = "none";
-    z.style.display = "none";
-  } else {
-    x.style.display = "none";
-    y.style.display = "block";
-    z.style.display = "block";
-  }
-}
 
-////////// Helper functions
+
+$(".content").fadeIn(3000)
+
+
+
+$("#btnStats").on('click', function(){
+    if(isGameRunning){
+        $("#game-story").fadeToggle(5)
+        $("#status-window").fadeToggle(10)
+    }
+});
+
 
 function runGame (){
     if(!isGameRunning){
+        $("#game-welcome").fadeOut(10)
         Prologue.triggerEvent();
         isGameRunning = true;
     }
