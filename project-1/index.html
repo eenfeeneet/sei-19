@@ -17,12 +17,19 @@
 
     <div class="displayWrapper">
 
-        <p class="welcome" id="game-welcome">CLICK START TO BEGIN</p>
-        <p class="output" id="game-story"></p>
+        <p class="mainoutput" id="game-welcome">CLICK START TO BEGIN</p>
+        <p class="mainoutput" id="game-story"></p>
 
-        <div class="window" id="status-window">
-            <p class="output" id="game-narration"></p>
-            <p class="output" id="player-status"></p>
+        <div class="game-window" id="status-enemy">
+            <p class="output" id="enemy-stats">Enemy Stats</p>
+        </div>
+
+        <div class="game-window" id="status-game">
+            <p class="output" id="game-narration">Welcome</p>
+        </div>
+
+        <div class="game-window" id="status-player">
+            <p class="output" id="player-stats">Player Stats</p>
         </div>
 
     </div>
@@ -30,10 +37,13 @@
     <div class="controlWrapper" onclick="" onreset="">
 
         <button type="button" class="myButton" id="btnStart">START</button>
+        <button type="button" class="myButton" id="btnStory">STORY</button>
 
         <div class="window" id="choice-window"></div>
 
-        <button type="button" class="myButton" id="btnStats">STATUS</button>
+        <button type="button" class="myButton" id="btnPlayer">PLAYER</button>
+        <button type="button" class="myButton" id="btnEnemy">ENEMY</button>
+
 
     </div>
 

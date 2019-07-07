@@ -1,20 +1,19 @@
 var isGameRunning = false;
+var isPlayerAssignedStats = false;
+var isEnemyAssignedStats = false;
 
 var Display = {
     story : function(story){
-        $("#game-welcome").fadeOut(10);
         $("#game-story").text(story).fadeIn(100);
-        // var output = document.querySelector("#game-story");
-        // output.innerText = story;
     },
     narration : function(narration){
          $("#game-narration").html(narration);
     },
-    clear : function(){
-         $("#game-narration").empty();
+    statusPlayer : function(status){
+         $("#player-stats").html(status);
     },
-    status : function(status){
-         $("#player-status").html(status);
+    statusEnemy : function(status){
+         $("#enemy-stats").html(status);
     },
     choices : function(choices){
         $("#choice-window").html(choices);
@@ -24,17 +23,28 @@ var Display = {
     delayNarration: function(narration, choice){
         setTimeout(function(){
             Display.narration(narration);
-            StatusWindow.show();
+            StatusWindow.showGame();
             setTimeout(function(){
                 Display.choices(choice)
             } , 2000 );
         } , 5000 );
     },
-    delayStatus: function(status, choice){
+    delayPeekStatusPlayer: function(status, choice){
         setTimeout(function(){
-            Display.status(status);
-            StatusWindow.show();
+            Display.statusPlayer(status);
+            StatusWindow.showPlayer();
             setTimeout(function(){
+                StatusWindow.hideAllWindows();
+                Display.choices(choice)
+            } , 2000 );
+        } , 3500 );
+    },
+    delayPeekStatusEnemy: function(status, choice){
+        setTimeout(function(){
+            Display.statusEnemy(status);
+            StatusWindow.showEnemy();
+            setTimeout(function(){
+                StatusWindow.hideAllWindows();
                 Display.choices(choice)
             } , 2000 );
         } , 3500 );
@@ -46,15 +56,22 @@ var Display = {
     }
 }
 var StatusWindow = {
-    show: function(){
+    showGame: function(){
         $("#game-story").fadeOut(10);
-        // $("#status-window").css({margin: '50px 200px 50px 200px'});
-        $("#status-window").fadeIn(100);
-        // var x = document.getElementById("#status-window");
-        // x.style.display = "block";
+        $("#status-game").fadeIn(100);
     },
-    hide: function(){
-        $("#status-window").fadeOut(10);
+    showPlayer: function(){
+        $("#game-story").fadeOut(10);
+        $("#status-player").fadeIn(100);
+    },
+    showEnemy: function(){
+        $("#game-story").fadeOut(10);
+        $("#status-enemy").fadeIn(100);
+    },
+    hideAllWindows: function(){
+        $("#status-game").fadeOut(10);
+        $("#status-player").fadeOut(10);
+        $("#status-enemy").fadeOut(10);
         $("#game-story").fadeIn(100);
     }
 }
@@ -72,10 +89,30 @@ if(!isGameRunning){
     console.log("game is not running")
 };
 
-$("#btnStats").on('click', function(){
+
+
+$("#btnStory").on('click', function(){
     if(isGameRunning){
-        $("#game-story").fadeToggle(5)
-        $("#status-window").fadeToggle(10)
+        $("#status-player").hide();
+        $("#status-enemy").hide();
+        $("#status-game").hide();
+        $("#game-story").show();
+    }
+});
+$("#btnPlayer").on('click', function(){
+    if(isGameRunning && isPlayerAssignedStats){
+        $("#game-story").hide();
+        $("#status-game").hide();
+        $("#status-player").show();
+        $("#status-enemy").hide();
+    }
+});
+$("#btnEnemy").on('click', function(){
+    if(isGameRunning && isEnemyAssignedStats){
+        $("#game-story").hide();
+        $("#status-game").hide();
+        $("#status-player").hide();
+        $("#status-enemy").show();
     }
 });
 
@@ -86,11 +123,3 @@ $("#btnStart").on('click', function(){
         isGameRunning = true;
     }
 });
-
-// function runGame (){
-//     if(!isGameRunning){
-//         $("#game-welcome").fadeOut(10)
-//         Prologue.triggerEvent();
-//         isGameRunning = true;
-//     }
-// }

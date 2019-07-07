@@ -78,7 +78,9 @@ var Player = {
         var s = "Sta: " + this.sta + "<br>";
         var i = "Items: " + this.items + "<br>";
         var sk = "Skills: " + Skills[0].skillName + ", " + Skills[1].skillName
-        Display.status(n + l + h + m + s + i + sk);
+        isPlayerAssignedStats = true;
+        Display.delayPeekStatusPlayer(n + l + h + m + s + i + sk);
+
     },
     takeItem: function(item){
         this.items.push(item);
@@ -100,6 +102,7 @@ var Player = {
     },
     useKick: function(target){
         Skills[1].use(target);
+        this.displayStats();
     }
 }
 
@@ -146,9 +149,6 @@ var Monster = {
 function run(){
 
 }
-function useSkills(){
-
-}
 function useItems(){
 
 }
@@ -175,9 +175,8 @@ var Prologue = {
 };
 function beginAdv(){
     $("#player-choice").fadeOut();
-    StatusWindow.hide();
+    StatusWindow.hideAllWindows();
     Beginning.triggerEvent();
-    Display.clear();
     Player.displayStats();
 };
 var Beginning = {
@@ -189,9 +188,8 @@ var Beginning = {
     }
 };
 function moveForward(){
-
     $("#player-choice").fadeOut();
-    StatusWindow.hide();
+    StatusWindow.hideAllWindows();
     MeetRandomWeak.triggerEvent();
 };
 var MeetRandomWeak = {
@@ -205,7 +203,8 @@ var MeetRandomWeak = {
         Display.story(this.story)
         var n = this.monster.species + "<br>";
         var h = "Hp: " + this.monster.hp + "<br>";
-        Display.delayStatus(n + h);
+        isEnemyAssignedStats = true;
+        Display.delayPeekStatusEnemy(n + h);
         Display.delayChoice(this.playerChoices);
     },
     fightEvent: function(){
@@ -219,12 +218,12 @@ var MeetRandomWeak = {
 };
 function fight(){
     $("#player-choice").fadeOut();
-    StatusWindow.hide();
+    StatusWindow.hideAllWindows();
     MeetRandomWeak.fightEvent();
 }
 function useSkills(){
     $("#player-choice").fadeOut();
-    StatusWindow.hide();
+    StatusWindow.hideAllWindows();
     MeetRandomWeak.skillEvent();
 
 }

@@ -71,7 +71,7 @@ div.displayWrapper {
 	padding: 30px;
 	display: none;
 }
-#status-window {
+.game-window{
 	flex: 1 1 15em;
 
 	border: 5px double #1C6EA4;
@@ -79,22 +79,32 @@ div.displayWrapper {
 	/*margin: 10px 10px 10px 0;*/
 	margin: 50px 200px 50px 200px;
 	overflow: auto;
-	display: none;
 	align-items: center;
+	display: none;
 }
 #game-narration {
 	color: lime;
-	text-align: left;
+	text-align: center;
 	font-size: 23px;
 	font-family: 'VT323', monospace;
 	margin: 20px;
+	overflow: auto;
 }
-#player-status {
+#enemy-stats {
 	color: lime;
 	text-align: left;
 	font-size: 25px;
 	font-family: 'VT323', monospace;
 	margin: 20px;
+	overflow: auto;
+}
+#player-stats {
+	color: lime;
+	text-align: left;
+	font-size: 25px;
+	font-family: 'VT323', monospace;
+	margin: 20px;
+	overflow: auto;
 }
 
 div.controlWrapper {
