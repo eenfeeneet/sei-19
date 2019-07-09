@@ -1,72 +1,289 @@
 
 ////////// Helper functions
 
-var Display = {
-    story : function(story){
-        $("#game-story").text(story).fadeIn(100);
+// var SoundEffects = {
+//     createBeep: function(){
+//         var beep = document.createElement('audio');
+//         beep.src = "./audio/Beep.mp3";
+//     },
+//     btnBeepPlay: function(){
+//         beep.play();
+//     },
+//     createChoices: function(){
+//         var choices = document.createElement('audio');
+//         choices.src = "./audio/Choices.mp3";
+//     },
+//     btnChoicesPlay: function(){
+//         choices.play();
+//     },
+//     createNotify: function(){
+//         var notify = document.createElement('audio');
+//         notify.src = "./audio/Notification.mp3";
+//     },
+//     btnNotifyPlay: function(){
+//         notify.play();
+//     },
+//     createError: function(){
+//         var error = document.createElement('audio');
+//         error.src = "./audio/Error.mp3";
+//     },
+//     btnErrorPlay: function(){
+//         error.play();
+//     },
+//     createLvlUp: function(){
+//         var lvlUp = document.createElement('audio');
+//         lvlUp.src = "./audio/LevelUp.mp3";
+//     },
+//     btnLvlUpPlay: function(){
+//         lvlUp.play();
+//     },
+//     createKick: function(){
+//         var kick = document.createElement('audio');
+//         kick.src = "./audio/Kick.mp3";
+//     },
+//     btnKickPlay: function(){
+//         kick.play();
+//     },
+// }
+
+var GameEventListeners = {
+    addEventBtnStart: function(){
+        var x = document.querySelector("#btnStart");
+        x.addEventListener('click', this.start)
     },
-    narration : function(narration){
-        $("#game-narration").html(narration);
-        sndNotify();
+    start: function(event){
+        if(!Game.isRunning){
+            // SoundEffects.btnBeepPlay();
+            ToggleSelection.hideWelcome();
+            ToggleSelection.showStory();
+            GameEvent.triggerEvent();
+        } else{
+            // SoundEffects.btnErrorPlay();
+        }
+    },
+    addEventBtnStory: function(){
+        var x = document.querySelector("#btnStory");
+        x.addEventListener('click', this.toggleStory)
+    },
+    toggleStory: function(event){
+        var a = document.querySelector("#mainstory").style.display
+        var b = document.querySelector("#objectivegame").style.display
+        var c = document.querySelector("#statusenemy").style.display
+        var d = document.querySelector("#statusplayer").style.display
+
+        if(Game.isRunning && GameObjective.isAssigned){
+            // SoundEffects.btnBeepPlay();
+            if(a === "none"){
+                ToggleSelection.showMainHideAllWindows();
+            }
+            if(b === "none"){
+                ToggleSelection.showObjective();
+            }
+            if(a === "block" && b === "block"){
+                ToggleSelection.hideObjective();
+            }
+        }
+    },
+    addEventBtnEnemy: function(){
+        var x = document.querySelector("#btnEnemy");
+        x.addEventListener('click', this.toggleEnemy)
+    },
+    toggleEnemy: function(event){
+        var a = document.querySelector("#mainstory").style.display
+        var b = document.querySelector("#objectivegame").style.display
+        var c = document.querySelector("#statusenemy").style.display
+        var d = document.querySelector("#statusplayer").style.display
+
+        if(Game.isRunning && MonsterEncounter.monster.isAssigned){
+            // SoundEffects.btnBeepPlay();
+            if(c === "none"){
+                Animate.btnEnemyRmvPulse();
+                ToggleSelection.showEnemy();
+            } else {
+                ToggleSelection.hideEnemy();
+            }
+        } else{
+            // SoundEffects.btnErrorPlay();
+        }
+    },
+    addEventBtnPlayer: function(){
+        var x = document.querySelector("#btnPlayer");
+        x.addEventListener('click', this.togglePlayer)
+    },
+    togglePlayer: function(event){
+        var a = document.querySelector("#mainstory").style.display
+        var b = document.querySelector("#objectivegame").style.display
+        var c = document.querySelector("#statusenemy").style.display
+        var d = document.querySelector("#statusplayer").style.display
+
+        if(Game.isRunning && Player.isAssigned){
+            // SoundEffects.btnBeepPlay();
+            if(d === "none"){
+                Animate.btnPlayerRmvPulse();
+                ToggleSelection.showPlayer();
+            } else {
+                ToggleSelection.hidePlayer();
+            }
+        } else{
+            // SoundEffects.btnErrorPlay();
+        }
+    }
+};
+var Animate = {
+    btnEnemyAddPulse: function(){
+    var x = document.querySelector("#btnEnemy");
+    x.style.animation = "pulse 1s 10";
+    x.style.color = "#FF0000";
+    },
+    btnEnemyRmvPulse: function(){
+    var x = document.querySelector("#btnEnemy");
+    x.style.animation = "none";
+    x.style.color = "#757d6f";
+    },
+    btnPlayerAddPulse: function(){
+        var x = document.querySelector("#btnPlayer");
+        x.style.animation = "pulse 1s 10";
+        x.style.color = "#FF0000";
+    },
+    btnPlayerRmvPulse: function(){
+    var x = document.querySelector("#btnPlayer");
+    x.style.animation = "none";
+    x.style.color = "#757d6f";
+    }
+};
+var Print = {
+    story : function(story){
+        var x = document.querySelector("#gamestory");
+        x.innerText = story;
+    },
+    objective : function(narration){
+        var x = document.querySelector("#gameobjective");
+        x.innerHTML = narration;
+        // sndNotify();
     },
     statusPlayer : function(status){
-        $("#player-stats").html(status);
-        $("#btnPlayer").animate({
-            color: "#DC143C "})
-        $("#btnPlayer").effect("shake", {times:4, distance: 5}, 500);
-        sndNotify();
+        var x = document.querySelector("#playerstats");
+        x.innerHTML = status;
+        Animate.btnPlayerAddPulse();
+        // sndNotify();
     },
     statusEnemy : function(status){
-        $("#enemy-stats").html(status);
-        $("#btnEnemy").animate({
-            color: "#DC143C"})
-        $("#btnEnemy").effect("shake", {times:4, distance: 5}, 500);
-        sndNotify();
+        var x = document.querySelector("#enemystats");
+        x.innerHTML = status;
+        Animate.btnEnemyAddPulse();
+        // sndNotify();
     },
     choices : function(choices){
-        $("#choice-window").html(choices);
-        $("#choice-window").fadeIn(500);
-
+        var x = document.querySelector("#choicewindow");
+        x.innerHTML = choices;
     },
     delayStory: function(story, choice){
         setTimeout(function(){
-            Display.story(story);
+            Print.story(story);
         } , 3000 );
     },
-    delayNarration: function(narration, choice){
+    delayObjective: function(narration, choice){
         setTimeout(function(){
-            Display.narration(narration);
-            StatusWindow.showGame();
+            Print.objective(narration);
+            ToggleSelection.showObjectiveHideAll();
             setTimeout(function(){
-                Display.choices(choice)
+                Print.choices(choice)
             } , 1000 );
         } , 3000 );
     },
     delayChoice: function(choice){
         setTimeout(function(){
-            Display.choices(choice)
+            Print.choices(choice)
         } , 1500 );
     }
 };
-var StatusWindow = {
-    showGame: function(){
-        $("#game-story").fadeOut(10);
-        $("#status-game").fadeIn(100);
+var ToggleSelection = {
+    showWelcome: function(){
+        var x = document.querySelector("#gamewelcome");
+        x.style.display = "block"
     },
-    showPlayer: function(){
-        $("#game-story").fadeOut(10);
-        $("#status-player").fadeIn(100);
+    hideWelcome: function(){
+        var x = document.querySelector("#gamewelcome");
+        x.style.display = "none"
+    },
+    showStory: function(){
+        var x = document.querySelector("#gamestory");
+        x.style.display = "block"
+    },
+    hideStory: function(){
+        var x = document.querySelector("#gamestory");
+        x.style.display = "none"
+    },
+    showMain: function(){
+        var x = document.querySelector("#mainstory");
+        x.style.display = "block"
+    },
+    hideMain: function(){
+        var x = document.querySelector("#mainstory");
+        x.style.display = "none"
     },
     showEnemy: function(){
-        $("#game-story").fadeOut(10);
-        $("#status-enemy").fadeIn(100);
+        var x = document.querySelector("#statusenemy");
+        x.style.display = "block"
     },
-    hideAllWindows: function(){
-        $("#status-game").fadeOut(10);
-        $("#status-player").fadeOut(10);
-        $("#status-enemy").fadeOut(10);
-        $("#game-story").fadeIn(100);
-    }
+    hideEnemy: function(){
+        var x = document.querySelector("#statusenemy");
+        x.style.display = "none"
+    },
+    showObjective: function(){
+        var x = document.querySelector("#objectivegame");
+        x.style.display = "block"
+    },
+    hideObjective: function(){
+        var x = document.querySelector("#objectivegame");
+        x.style.display = "none"
+    },
+    showPlayer: function(){
+        var x = document.querySelector("#statusplayer");
+        x.style.display = "block"
+    },
+    hidePlayer: function(){
+        var x = document.querySelector("#statusplayer");
+        x.style.display = "none"
+    },
+    showChoices: function(){
+        var x = document.querySelector(".playerchoice");
+        x.style.display = "block"
+    },
+    hideChoices: function(){
+        var x = document.querySelector(".playerchoice");
+        x.style.display = "none"
+    },
+    showAll: function(){
+        this.showMain();
+        this.showObjective();
+        this.showEnemy();
+        this.showPlayer();
+    },
+    hideAll: function(){
+        this.hideMain();
+        this.hideObjective();
+        this.hidePlayer();
+        this.hideEnemy();
+    },
+    showMainHideAllWindows: function(){
+        this.showMain();
+        this.hideObjective();
+        this.hidePlayer();
+        this.hideEnemy();
+    },
+    showAllWindowsHideMain(){
+        this.hideMain();
+        this.showObjective();
+        this.showPlayer();
+        this.showEnemy();
+    },
+    showObjectiveHideAll(){
+        this.hideMain();
+        this.showObjective();
+        this.hidePlayer();
+        this.hideEnemy();
+    },
 };
 var Random = {
     randomNumber: function(min, max){
@@ -79,23 +296,8 @@ var Random = {
 
 ////////// Game Mechanics
 
-var GameState = {
 
 
-}
-
-var DDay = {
-  counter : 30,
-  get decrement() {
-    this.counter--;
-  },
-};
-var MonsterKills = {
-      counter : 0,
-      get kills() {
-            this.counter++;
-      }, 
-};
 
 ////////// Skills
 
@@ -128,6 +330,7 @@ var Skills = [{
         use : function(target){
             target.hp = target.hp -10;
             if(target.hp>0){
+
                 // alert("Enemy has " + target.hp + " left");
             } else {
                 target.isAlive = false;
@@ -177,9 +380,9 @@ var Twig = {
 
 var Player = {
     name: 'Anon',
-    level: 1,
+    level: 0,
     hp: 100,
-    mp: 2000,
+    mp: 200,
     sta: 500,
     isAlive: true,
     xp: 0,
@@ -187,85 +390,97 @@ var Player = {
     cores: 0,
     items: [],
     skills: Skills,
+    isAlive: true,
+    isAssigned: false
+};
+
+var PlayerAction = {
     postBattle: function(xp, core){
-        this.xp += xp;
-        if (this.xp >= this.toLvlUp){
-            this.level ++;
-            this.xp -= this.toLvlUp;
-            this.toLvlUp = this.toLvlUp + (this.toLvlUp * 0.3);
+        Player.xp += xp;
+        if (Player.xp >= Player.toLvlUp){
+            // sndLvlUp();
+            Player.level ++;
+            GameObjective.levelReached = Player.level;
+            Player.xp -= Player.toLvlUp;
+            Player.toLvlUp = Player.toLvlUp + (Player.toLvlUp * 0.3);
         }
-        this.cores += core;
-        this.updateStats();
+        Player.cores += core;
+        GameObjective.coresObtained = Player.cores;
+        PlayerAction.updateStats();
     },
     updateStats: function(){
-        var z = 0
-        var n = this.name + "<br>";
-        var l = "Level: " + this.level + "<br>";
-        var h = "Hp: " + this.hp + "<br>";
-        var m = "Mp: " + this.mp + "<br>";
-        var s = "Sta: " + this.sta + "<br>";
+        var n = Player.name + "<br>";
+        var l = "Level: " + Player.level + "<br>";
+        var h = "Hp: " + Player.hp + "<br>";
+        var m = "Mp: " + Player.mp + "<br>";
+        var s = "Sta: " + Player.sta + "<br>";
+        var c = "Cores: " + Player.cores + "<br>";
         var i = "";
-        if(this.items.length===0){
+        if(Player.items.length===0){
             i = "0";
         }else{
             var i = "";
-            for(var x=0; x<= this.items.length; x++){
-                i =  this.items[0].itemname + ", "
+            for(var x=0; x<= Player.items.length; x++){
+                i =  Player.items[0].itemname + ", "
             }
         }
         var item = "Items: " + i + "<br>";
-        var x = "Xp: " + this.xp + "<br>";
-        var sk = "Skills: " + Skills[0].skillName + ", " + Skills[1].skillName
-        isPlayerAssignedStats = true;
+        var x = "Xp: " + Player.xp + "<br>";
+        var sk = "Skills: " + Skills[0].skillName + ", " + Skills[1].skillName;
+        Player.isAssigned = true;
         setTimeout(function(){
-            Display.statusPlayer(n + l + h + m + s + item + x + sk);
+            Print.statusPlayer(n + l + h + m + s + c + item + x + sk);
         }, 2000);
 
     },
-    moving: function(staexhausted){
-        this.sta = this.sta - staexhausted;
-        this.updateStats();
+    exhaustingStamina: function(staexhausted){
+        Player.sta = Player.sta - staexhausted;
+        PlayerAction.updateStats();
     },
-    resting: function(staregen, mpregen){
-        this.sta += staregen;
-        this.mp += mpregen;
-        this.updateStats();
+    restingTime: function(staregen, mpregen){
+        Player.sta += staregen;
+        Player.mp += mpregen;
+        PlayerAction.updateStats();
     },
     takeItem: function(item){
-        this.items.push(item);
-        item.owner = this.name;
-        this.updateStats();
+        Player.items.push(item);
+        item.owner = Player.name;
+        PlayerAction.updateStats();
     },
     useFryinPan: function(injured){
-        this.mp = this.mp - FryingPan.mpRequired
+        Player.mp = Player.mp - FryingPan.mpRequired
         FryingPan.use(injured)
-        this.updateStats();
+        PlayerAction.updateStats();
     },
     usePen: function(target){
-        this.mp = this.mp - Pen.mpRequired
+        Player.mp = Player.mp - Pen.mpRequired
         Pen.use(target);
-        this.updateStats();
+        PlayerAction.updateStats();
     },
     useSnap: function(target){
-        if(this.mp<=2000){
+        if(Player.mp<=2000){
+
             // alert("warning! you barely have enough MANA for this move");
-            this.mp = this.mp -Skills[0].mpRequired;
+            Player.mp = Player.mp -Skills[0].mpRequired;
             Skills[0].use(target);
-            this.updateStats();
+            PlayerAction.updateStats();
         }
-        if(this.mp<2000){
+        if(Player.mp<2000){
+
             // alert("You do not have enough MANA");
         }
     },
     useKick: function(target){
-        if(target.isAlive){
-            Skills[1].use(target);
-            this.sta = this.sta - Skills[1].staRequired
-            this.updateStats();
+        if(Player.sta<10){
+
         }
-
-    },
-
+        if(target.isAlive){
+            // sndKick();
+            Skills[1].use(target);
+            Player.sta = Player.sta - Skills[1].staRequired
+            PlayerAction.updateStats();
+        }
+    }
 };
 var DyingMan = {
     name: 'John',
@@ -273,11 +488,11 @@ var DyingMan = {
     mp: 0,
     sta: 0,
     isAlive: true,
+    isAssigned: false,
     skills: "skills",
 };
 
 ////////// Monsters
-
 
 var Monster = {
     type:[{
@@ -297,6 +512,7 @@ var Monster = {
     xpGiven: 0,
     core: 1,
     isAlive: true,
+    isAssigned: false,
     createRandom: function(){
         var mon = Object.create(Monster);
         mon.type = Random.randomArray(this.type)
@@ -304,221 +520,173 @@ var Monster = {
         mon.xpGiven = Random.randomNumber(5,15);
         mon.core = 1;
         mon.isAlive = true;
+        mon.isAssigned = true;
         console.log("mon has been created");
         return mon
     }
 };
 
-////////// Actions
+////////// Scenario - Game Objective
 
+var GameObjective = {
+    levelReached: 0,
+    coresObtained: 0,
+    countDownEnd: 25,
+    isAssigned: false,
+}
+var GameObjectiveEvent = {
+    updateLevel: function(){
+        var l = EndGame.levelReached
 
+    },
+    updateCores: function(){
 
+    },
+    updateDeadline: function(){
 
+    },
+    checkLevel: function(){
 
+    },
+    checkCores: function(){
 
-////////// Encounter - Prologue
+    },
+    checkDeadline: function(){
 
-var Prologue = {
-    eventStory: "Earth exploded. You died. Or at least you thought you died. You woke up in the middle of a dense forest. Surrounded by trees, you know for sure, did not exist on earth. You take your time to check your surroundings. However it was then when you blacked out. You woke up again but this time with a.. 'game prompt?' hovering in front of you.",
-    gamenarration: "Welcome Anon, to Planet Tutorial. You are one of the lucky few to be chosen. This planet is considered a benchmark. A benchmark to determine whether you have what it takes to survive your next destination. This is only a pitstop. In 30 days, reach Level 5 or accumulate 20 Monster Cores by the end of the tutorial, and you clear your objective. Whether you LIVE or DIE is up to you. There is only Rule here: SURVIVE. Enjoy.",
-    playerChoices: "<a class='player-choice' onclick='beginAdv()'>Begin</a>",
+    },
     triggerEvent: function(){
-        Display.story(this.eventStory)
-        Display.delayNarration(this.gamenarration, this.playerChoices);
+        Print.objective(Prologue.eventStory)
+        Print.delayObjective(Prologue.gamenarration, Prologue.playerChoices);
+    }
+}
+
+////////// Scenario - Start Game
+
+var Game = {
+    isRunning: false,
+    eventStory: "Earth exploded. You died. Or at least you thought you died. You woke up in the middle of a dense forest. Surrounded by trees, you know for sure, did not exist on earth. You take your time to check your surroundings. However it was then when you blacked out. You woke up again but this time with a.. 'game prompt?' hovering in front of you.",
+    gameIntro: "Welcome Anon, to Planet Tutorial. You are one of the lucky few to be chosen. This planet is considered a benchmark. A benchmark to determine whether you have what it takes to survive your next destination. This is only a pitstop. In 30 days, reach Level 5 or accumulate 20 Monster Cores by the end of the tutorial, and you clear your objective. Whether you LIVE or DIE is up to you. There is only Rule here: SURVIVE. Enjoy.",
+    playerChoices: "<a class='playerchoice' onclick='beginAdv()'>Begin</a>",
+};
+var GameEvent = {
+    triggerEvent: function(){
+        Game.isRunning = true;
+        Print.story(Game.eventStory)
+        GameObjective.isAssigned = true;
+        Print.delayObjective(Game.gameIntro, Game.playerChoices);
     }
 };
-
-function beginAdv(){
-    sndBeep();
-    $(".player-choice").fadeOut(500);
-    StatusWindow.hideAllWindows();
-    Beginning.triggerEvent();
-    Player.updateStats();
-};
-
-////////// Encounter - Beginning
+////////// Scenario - Beginning
 
 var Beginning = {
     eventStory: "You spend minutes trying to figure things out. Pressing the 'STATUS' button brings up a window where you can see a list of stats. With nothing else to be done, or could be done, in your current situation, you decide to proceed forward.",
-    playerChoices: "<a class='player-choice' onclick='moveForward()'>Go</a> <a class='player-choice' onclick='restTime()'>Rest</a>",
+    playerChoices: "<a class='playerchoice' onclick='moveForward()'>Go</a> <a class='playerchoice' onclick='restTime()'>Rest</a>"
+};
+var BeginningEvent = {
     triggerEvent: function(){
-        Display.story(this.eventStory);
-        Display.delayChoice(this.playerChoices);
+        Print.story(Beginning.eventStory);
+        Print.delayChoice(Beginning.playerChoices);
     }
 };
-function moveForward(){
-    console.log("move forward")
-    var stamNeeded = 10;
-    Player.moving(stamNeeded)
-
-    $(".player-choice").fadeOut(500);
-    StatusWindow.hideAllWindows();
-    MonsterEncounter.triggerEvent();
-};
-function restTime(){
-    $(".player-choice").fadeOut(500);
-    StatusWindow.hideAllWindows();
-    RestPoint.triggerEvent();
-};
-
-////////// Rest -
+////////// Scenario - Rest -
 
 var RestPoint = {
     eventStory: "You take time to rest and recover. You realize at least a days rest, is needed to recover some of your stamina and mana.. You've feel like you can continue on.  ",
-    playerChoices: "<a class='player-choice' onclick='moveForward()'>Go</a> <a class='player-choice' onclick='restTime()'>Rest</a>",
-    staRegen: 30,
-    mpRegen: 30,
+    playerChoices: "<a class='playerchoice' onclick='moveForward()'>Go</a> <a class='playerchoice' onclick='restTime()'>Rest</a>",
+    staRegen: 20,
+    mpRegen: 20,
+};
+var RestPointEvent = {
     triggerEvent: function(){
-        Display.story(this.eventStory);
-        Player.resting(this.staRegen, this.mpRegen);
-        Display.delayChoice(this.playerChoices);
+        Print.story(RestPoint.eventStory);
+        Player.resting(RestPoint.staRegen, RestPoint.mpRegen);
+        Print.delayChoice(RestPoint.playerChoices);
     }
 };
-
-////////// Encounter - Meet Random Weak Monsters
+////////// Scenario - Encounter Random Weak Monsters
 
 var MonsterEncounter = {
     eventStory: ["You encountered a monster not long after walking. Though the monster looks weak, you're unsure of what to do.","After walking what feels like an eternity. You find the first sign of life form. A hideous, grotesque life form. A life form nonetheless. You're actually not sure how to feel about that."],
     monster: {},
-    playerChoices: "<a class='player-choice' onclick='fight()'>Fight</a> <a class='player-choice' onclick='run()'>Run</a>",
+    playerChoices: "<a class='playerchoice' onclick='fight()'>Fight</a> <a class='playerchoice' onclick='run()'>Run</a>",
+};
+var MonsterEncounterEvent = {
     generateMon: function(){
-        this.monster = Monster.createRandom();
+        MonsterEncounter.monster = Monster.createRandom();
     },
     showGenMonStats: function(){
-        var s = this.monster.type.species + "<br>";
-        var h = "Hp: " + this.monster.hp + "<br>";
-        var d = "Description: " + this.monster.type.description + "<br>";
+        var s = MonsterEncounter.monster.type.species + "<br>";
+        var h = "Hp: " + MonsterEncounter.monster.hp + "<br>";
+        var d = "Description: " + MonsterEncounter.monster.type.description + "<br>";
         isEnemyAssignedStats = true;
         setTimeout(function(){
-            Display.statusEnemy(s + h + d);
+            Print.statusEnemy(s + h + d);
         }, 2000);
 
     },
     triggerEvent: function(){
         this.generateMon();
         this.showGenMonStats();
-        Display.story(Random.randomArray(this.eventStory));
-        Display.delayChoice(this.playerChoices);
+        Print.story(Random.randomArray(MonsterEncounter.eventStory));
+        Print.delayChoice(MonsterEncounter.playerChoices);
     },
 };
-function fight(){
-    $(".player-choice").fadeOut(500);
-    StatusWindow.hideAllWindows();
-    Battle.monster = MonsterEncounter.monster;
-    Battle.triggerEvent(MonsterEncounter.monster);
-};
-function run(){
-    var stamNeeded = 30;
-    Player.moving(stamNeeded)
-};
-
-////////// Encounter - Fight
+////////// Scenario - Battle
 
 var Battle = {
     eventStory: "You cautiously approach the monster",
     winStory: "Adrenaline still pumping through your veins, it takes you a long while to calm down. Before you could even settle down, a feeling you can only describe as euphoric, courses through your whole being. Despite the pleasant sensation , you can't help but panic. Checking your status , your best guess is that it was related to gaining Exp, seeing as that was the only change aside from your stamina and mana. As exhausted as you are, you have no choice but to carry on grinding.",
     monster: {},
-    playerChoices: "<a class='player-choice' onclick='useSkills()'>Skills</a> <a class='player-choice' onclick='useItems()'>Items</a>",
-    skillChoices: "<a class='player-choice' onclick='useSkillOne()'>Snap</a> <a class='player-choice' onclick='useSkillTwo()'>Kick</a>",
-    itemChoices: "<a class='player-choice' onclick='useItemOne'>Pen</a> <a class='player-choice' onclick='useItemTwo()'>Frying Pan</a>",
-    winChoices: "<a class='player-choice' onclick='moveForward()'>Go</a> <a class='player-choice' onclick='restTime()'>Rest</a>",
+    playerChoices: "<a class='playerchoice' onclick='useSkills()'>Skills</a> <a class='playerchoice' onclick='useItems()'>Items</a>",
+    skillChoices: "<a class='playerchoice' onclick='useSkillOne()'>Snap</a> <a class='playerchoice' onclick='useSkillTwo()'>Kick</a>",
+    itemChoices: "<a class='playerchoice' onclick='useItemOne'>Pen</a> <a class='playerchoice' onclick='useItemTwo()'>Frying Pan</a>",
+    winChoices: "<a class='playerchoice' onclick='moveForward()'>Go</a> <a class='playerchoice' onclick='restTime()'>Rest</a>"
+};
+var BattleEvent = {
     updateMonStats: function(){
-        if(this.monster.isAlive){
-            var s = this.monster.type.species + "<br>";
-            var h = "Hp: " + this.monster.hp + "<br>";
-            var d = "Description: " + this.monster.type.description + "<br>";
+        if(Battle.monster.isAlive){
+            var s = Battle.monster.type.species + "<br>";
+            var h = "Hp: " + Battle.monster.hp + "<br>";
+            var d = "Description: " + Battle.monster.type.description + "<br>";
             setTimeout(function(){
-                Display.statusEnemy(s + h + d);
+                Print.statusEnemy(s + h + d);
             }, 2000);
-            this.skillEvent();
-        } else if (this.monster.hp <= 0 || !this.monster.isAlive){
-            isEnemyAssignedStats = false;
-            Player.postBattle(this.monster.xpGiven , this.monster.core);
-            this.winEvent();
+            BattleEvent.triggerEvent();
+        } else if (Battle.monster.hp <= 0 || !Battle.monster.isAlive){
+            isAssigned = false;
+            setTimeout(function(){
+                PlayerAction.postBattle(Battle.monster.xpGiven , Battle.monster.core);
+            }, 2000);
+            BattleEvent.winEvent();
         }
     },
     triggerEvent: function(){
-        Display.story(this.eventStory);
-        Display.delayChoice(this.playerChoices);
+        Print.story(Battle.eventStory);
+        Print.delayChoice(Battle.playerChoices);
     },
     skillEvent: function(){
-        Display.delayChoice(this.skillChoices);
+        Print.delayChoice(Battle.skillChoices);
     },
     itemEvent: function(){
-        Display.delayChoice(this.itemChoices);
+        Print.delayChoice(Battle.itemChoices);
     },
     winEvent: function(){
-        Display.delayStory(this.winStory);
-        Display.delayChoice(this.winChoices);
-    }
-};
-function useSkills(){
-    $(".player-choice").fadeOut(500);
-    StatusWindow.hideAllWindows();
-    Battle.skillEvent();
-};
-function useSkillOne(){
-    if(Battle.monster.isAlive){
-        $(".player-choice").fadeOut(500);
-        Player.useSnap(Battle.monster);
-        Battle.updateMonStats();
-    }
-};
-function useSkillTwo(){
-    if(MonsterEncounter.monster.isAlive){
-        $(".player-choice").fadeOut(500);
-        Player.useKick(Battle.monster);
-        Battle.updateMonStats();
-    }
-};
-function useItems(){
-    if(Player.items.length === 0){
-        // alert("You have no items in your inventory!");
-        $(".player-choice").fadeOut(500);
-        StatusWindow.hideAllWindows();
-        Battle.fightEvent();
-    } else{
-        $(".player-choice").fadeOut(500);
-        StatusWindow.hideAllWindows();
-        Battle.itemEvent();
-    }
-};
-function useItemOne(){
-    if(Battle.monster.isAlive){
-        $(".player-choice").fadeOut(500);
-        Player.usePen(Battle.monster);
-        Battle.updateMonStats();
-        Battle.skillEvent();
-    }
-};
-function useItemTwo(){
-    if(Battle.monster.isAlive){
-        $(".player-choice").fadeOut(500);
-        Player.useFryinPan(Battle.monster);
-        Battle.updateMonStats();
-        Battle.skillEvent();
+        Print.delayStory(Battle.winStory);
+        Print.delayChoice(Battle.winChoices);
     }
 };
 
-////////// Encounter - Run
+////////// Scenario - Run
 
-var RunWeakMon = {
-    eventStory: "You run like theres no tomorrow. You could care less about your Cores and Exp. Nothing could make u face shit like that.",
-    playerChoices: "<a class='player-choice' onclick='useSkills()'>Use Skills</a> <a class='player-choice' onclick='useItems()'>Use Items</a>",
+var RunAway = {
+    eventStory: "You run as far as your legs could take you. Stopping only when you feel no presence behind, chasing you. Even though you're far away from the monster. You still feel some Fear. You take a moment to calm down before you make your next move. ",
+    playerChoices: "<a class='playerchoice' onclick='moveForward()'>Go</a> <a class='playerchoice' onclick='restTime()'>Rest</a>",
+    staWasted: Random.randomNumber(50, 100)
+};
+var RunAwayEvent = {
     triggerEvent: function(){
-        Display.story(this.eventStory);
-        Display.delayChoice(this.playerChoices);
-    },
-    skillEvent: function(){
-        Display.delayChoice(this.skillChoices);
-    },
-    itemEvent: function(){
-        Display.delayChoice(this.itemChoices);
-    },
-    winEvent: function(){
-        Display.story(this.winStory);
-
-        Display.delayChoice(this.winChoices);
+        Print.story(RunAway.eventStory);
+        Print.delayChoice(RunAway.playerChoices);
     }
 };
 
@@ -527,28 +695,178 @@ var RunWeakMon = {
 var FindItem = {
     eventStory: ["You see something on the ground."],
     item: [Pen, FryingPan, Twig],
-    playerChoices: "<a class='player-choice' onclick='takeItems()'>Take</a> <a class='player-choice' onclick='run()'>Ignore</a>",
+    playerChoices: "<a class='playerchoice' onclick='takeItems()'>Take</a> <a class='playerchoice' onclick='run()'>Ignore</a>",
+    ignoreChoices: "<a class='playerchoice' onclick='moveForward()'>Go</a> <a class='playerchoice' onclick='restTime()'>Rest</a>"
+};
+var FindItemEvent = {
     triggerEvent: function(){
-        Display.story(this.eventStory);
-        Display.delayChoice(this.playerChoices);
+        Print.story(FindItem.eventStory);
+        Print.delayChoice(FindItem.playerChoices);
     },
     takeEvent: function(){
-
+        Print.delayChoice(FindItem.playerChoices);
     },
     ignoreEvent: function(){
-
+        Print.delayChoice(FindItem.playerChoices);
     },
 };
+////////// Actions
+
+function beginAdv(){
+
+    // sndChoices();
+    console.log(" > to Beginning Scenario Object");
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+    PlayerAction.updateStats();
+    BeginningEvent.triggerEvent();
+};
+function moveForward(){
+    // sndChoices();
+    console.log(" > to Random Scenario Object");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    var staWasted = Random.randomNumber(10, 30);
+    PlayerAction.exhaustingStamina(staWasted);
+
+    PlayerAction.updateStats();
+    MonsterEncounterEvent.triggerEvent();
+};
+function restTime(){
+
+    // sndChoices();
+    console.log(" > to RestPoint Scenario Object");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    var staRegen = 20;
+    var mpRegen = 20;
+    PlayerAction.restingTime(staRegen, mpRegen)
+
+    PlayerAction.updateStats();
+    RestPointEvent.triggerEvent();
+};
+function run(){
+    // sndChoices();
+    console.log(" > to RunAway Scenario Object");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    var staWasted = Random.randomNumber(30, 50);
+    PlayerAction.exhaustingStamina(staWasted);
+
+    PlayerAction.updateStats();
+    RunAwayEvent.triggerEvent();
+};
+function fight(){
+
+    // sndChoices();
+    console.log(" > to Battle Scenario Object");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    var staWasted = Random.randomNumber(5, 10);
+    PlayerAction.exhaustingStamina(staWasted);
+
+    Battle.monster = MonsterEncounter.monster;
+    PlayerAction.updateStats();
+    BattleEvent.triggerEvent();
+};
+function useSkills(){
+    // sndChoices();
+    console.log(" > to UseSkill method in Battle Scenario Object");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    PlayerAction.updateStats();
+    BattleEvent.skillEvent();
+};
+function useSkillOne(){
+    // sndChoices();
+    console.log(" > use Players skill one method")
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    PlayerAction.useSnap(Battle.monster);
+    PlayerAction.updateStats();
+    BattleEvent.updateMonStats();
+};
+function useSkillTwo(){
+    // sndChoices();
+    console.log(" > use Players skill two method")
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    PlayerAction.useKick(Battle.monster);
+    PlayerAction.updateStats();
+    BattleEvent.updateMonStats();
+};
+function useItems(){
+    // sndChoices();
+    console.log(" > to UseItems method in Battle Scenario Object");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    if(Player.items.length === 0){
+        alert("You dont have any ITEMS to use!");
+        PlayerAction.updateStats();
+        BattleEvent.triggerEvent();
+    } else {
+        PlayerAction.updateStats();
+        BattleEvent.itemEvent();
+    }
+};
+function useItemOne(){
+    // sndChoices();
+    console.log(" > use Players item one method");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    PlayerAction.usePen(Battle.monster);
+    BattleEvent.updateMonStats();
+    BattleEvent.triggerEvent();
+};
+function useItemTwo(){
+    // sndChoices();
+    console.log(" > use Players item two method");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    PlayerAction.useFryinPan(Battle.monster);
+    BattleEvent.updateMonStats();
+    BattleEvent.triggerEvent();
+};
 function takeItems(){
-    $(".player-choice").fadeOut(500);
-    StatusWindow.hideAllWindows();
-    Player.takeItem(FindPen.item)
+    // sndChoices();
+    console.log(" > use Players item two method");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    Player.takeItem(FindItem.item);
+    PlayerAction.updateStats();
+    FindItemEvent.takeEvent();
+};
+function ignoreItems(){
+   // sndChoices();
+    console.log(" > use Players item two method");
+
+    ToggleSelection.showMainHideAllWindows();
+    ToggleSelection.hideChoices();
+
+    PlayerAction.updateStats();
+    FindItemEvent.ignoreEvent();
 };
 
-
-
-
-////////// Encounter - Find
-
-
-console.log("simplegame.js loaded")
+console.log("gamedata.js loaded")

@@ -2,65 +2,57 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <link href="https://fonts.googleapis.com/css?family=Ubuntu|VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <title>Fight Or Flight</title>
 </head>
 <body>
-<main>
-    <div class="content">
+    <main>
+        <div class="content">
+            <div class="displayWrapper">
+                <div class="gameWindow" id="statusenemy">
+                    <p class="output" id="enemystats"></p>
+                </div>
 
+                <div class="midcontainer">
+                    <div class="gameWindow" id="objectivegame">
+                        <p class="output" id="gameobjective"></p>
+                    </div>
+                    <div class="maindisplay" id="mainstory">
+                        <p class="output" id="gamewelcome">CLICK START TO BEGIN</p>
+                        <p class="output" id="gamestory"></p>
+                    </div>
+                </div>
 
-    <div class="displayWrapper">
+                <div class="gameWindow" id="statusplayer">
+                    <p class="output" id="playerstats"></p>
+                </div>
+            </div>
 
-        <div class="game-window" id="status-enemy">
-            <p class="output" id="enemy-stats">Enemy Stats</p>
+            <div class="controlWrapper" onclick="" onreset="">
+                <button type="button" class="myButton" id="btnStart">START</button>
+                <button type="button" class="myButton" id="btnStory">STORY</button>
+                <div class="window" id="choicewindow">
+
+                </div>
+                <button type="button" class="myButton" id="btnPlayer">PLAYER STATUS</button>
+                <button type="button" class="myButton" id="btnEnemy">ENEMY STATUS</button>
+            </div>
         </div>
+    </main>
+    <script>
+        window.onload = function() {
+            GameEventListeners.addEventBtnStart();
+            GameEventListeners.addEventBtnStory();
+            GameEventListeners.addEventBtnEnemy();
+            GameEventListeners.addEventBtnPlayer();
+        };
 
-        <p class="mainoutput" id="game-welcome">CLICK START TO BEGIN</p>
-        <p class="mainoutput" id="game-story"></p>
+    </script>
 
-
-
-        <div class="game-window" id="status-game">
-            <p class="output" id="game-narration">Welcome</p>
-        </div>
-
-        <div class="game-window" id="status-player">
-            <p class="output" id="player-stats">Player Stats</p>
-        </div>
-
-    </div>
-
-    <div class="controlWrapper" onclick="" onreset="">
-
-        <button type="button" class="myButton" id="btnStart">START</button>
-
-        <button type="button" class="myButton" id="btnStory">STORY</button>
-
-        <div class="window" id="choice-window"></div>
-
-        <button type="button" class="myButton" id="btnPlayer">PLAYER STATUS</button>
-        <button type="button" class="myButton" id="btnEnemy">ENEMY STATUS</button>
-
-
-    </div>
-
-
-    </div>
-</main>
-
-<script src="gamedata.js"></script>
-<script src="script.js"></script>
-
-<script>
-
-
-
-</script>
+    <script src="gamedata.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
