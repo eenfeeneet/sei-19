@@ -29,10 +29,10 @@ body {
 div.content {
 	display: flex;
 	flex-flow: column nowrap;
-  justify-content: center;
-  background-color: #228B22;
-	border: 20px ridge #556B2F;
-	border-radius: 20px;
+	justify-content: center;
+	background-color: darkslategray;
+	border: 30px ridge #708090;
+	border-radius: 25px;
 	height: 500px;
 	/*width: 70%;*/
 }
@@ -46,7 +46,7 @@ div.displayWrapper {
 	flex-flow: row nowrap;
 	justify-content: space-between;
 	overflow: auto;
-	margin: 20px 30px 10px 30px;
+	margin: 20px 30px 20px 30px;
 	height: 350px;
 
 }
@@ -76,12 +76,12 @@ div.displayWrapper {
 
 	border: 5px double #1C6EA4;
 	border-radius: 10px;
-	/*margin: 10px 10px 10px 0;*/
-	margin: 50px 200px 50px 200px;
+	margin: 30px 30px;
 	overflow: auto;
 	align-items: center;
 	display: none;
 }
+
 #game-narration {
 	color: lime;
 	text-align: center;
@@ -107,13 +107,25 @@ div.displayWrapper {
 	overflow: auto;
 }
 
+@media only screen and (min-width: 1000px) {
+  body {
+  	margin: 0 100px;
+	}
+  .game-window {
+  	margin: 50px 100px 50px 100px;
+  	}
+  #game-stats #player-stats #enemy-stats{
+  	text-align: center;
+  }
+}
+
 div.controlWrapper {
 	background-color: black;
 	flex-grow: 1;
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: space-around;
-	margin: 10px 30px 20px 30px;
+	margin: 20px 30px 20px 30px;
 	-webkit-box-shadow: 0px 0px 25px 10px #000000;
 	box-shadow: 0px 0px 25px 10px #000000;
 	border-radius: 10px;
@@ -122,10 +134,14 @@ div.controlWrapper {
 	text-align: center;
 }
 #choice-window {
+	-webkit-box-shadow: inset 0px 0px 40px 10px #000000;
+box-shadow: inset 0px 0px 40px 10px #000000;
+background: #2F4F4F;
+
 	flex-grow: 1;
-	border: 5px double #1C6EA4;
+	border: 7px ridge #708090;
 	border-radius: 10px;
-	margin: 10px;
+	margin: 5px;
 	text-align: center;
 	align-content: center;
 	display: flex;
